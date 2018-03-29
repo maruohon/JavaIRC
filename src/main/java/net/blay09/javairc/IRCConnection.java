@@ -1,15 +1,10 @@
 package net.blay09.javairc;
 
-import lombok.extern.java.Log;
-import net.blay09.javairc.snapshot.ChannelSnapshot;
-import net.blay09.javairc.snapshot.SnapshotWrapper;
-import net.blay09.javairc.snapshot.UserSnapshot;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -21,12 +16,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import net.blay09.javairc.snapshot.ChannelSnapshot;
+import net.blay09.javairc.snapshot.SnapshotWrapper;
+import net.blay09.javairc.snapshot.UserSnapshot;
 
-@Log
 public class IRCConnection implements Runnable {
 
     private static final String LINE_FEED = "\r\n";
+    public static final Logger logger = Logger.getLogger("JavaIRC");
 
     private final IRCListener listener;
     private final IRCConfiguration configuration;
@@ -66,7 +69,7 @@ public class IRCConnection implements Runnable {
         this.sender = new IRCSender(this, configuration.getMessageDelay());
         this.thread = new Thread(this, "IRCConnection (" + configuration.getServer() + ")");
 
-        log.setUseParentHandlers(false);
+        logger.setUseParentHandlers(false);
         ConsoleHandler logHandler = new ConsoleHandler();
         logHandler.setFormatter(new SimpleFormatter() {
             @Override
@@ -74,7 +77,7 @@ public class IRCConnection implements Runnable {
                 return "[" + configuration.getServer() + "] " + record.getMessage() + "\n";
             }
         });
-        log.addHandler(logHandler);
+        logger.addHandler(logHandler);
     }
 
     public void start() {
@@ -141,7 +144,7 @@ public class IRCConnection implements Runnable {
         if (configuration.getPassword() != null) {
             sender.addToSendQueue("PASS " + configuration.getPassword());
             if (configuration.isDebug()) {
-                log.info("> PASS **********");
+                logger.info("> PASS **********");
             }
         }
         sendRaw("NICK " + nick);
@@ -151,7 +154,7 @@ public class IRCConnection implements Runnable {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (configuration.isDebug()) {
-                    log.info("< " + line);
+                    logger.info("< " + line);
                 }
                 if (!line.isEmpty()) {
                     handleMessage(parser.parse(line));
@@ -307,7 +310,7 @@ public class IRCConnection implements Runnable {
 
     public void sendRaw(String line) {
         if(configuration.isDebug()) {
-            log.info("> " + line);
+            logger.info("> " + line);
         }
         sender.addToSendQueue(line);
     }

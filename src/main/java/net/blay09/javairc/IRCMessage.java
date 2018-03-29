@@ -1,7 +1,5 @@
 package net.blay09.javairc;
 
-import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.Map;
 
@@ -9,8 +7,8 @@ public class IRCMessage {
 
     private final Map<String, String> tags;
     private final String[] args;
-    private @Getter String prefix;
-    private @Getter String command;
+    private String prefix;
+    private String command;
 
 
     public IRCMessage(Map<String, String> tags, String prefix, String command, String[] args) {
@@ -77,5 +75,35 @@ public class IRCMessage {
 
     public String getTagByKey(String key) {
         return tags != null ? tags.get(key) : null;
+    }
+
+    public String getPrefix()
+    {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix)
+    {
+        this.prefix = prefix;
+    }
+
+    public String getCommand()
+    {
+        return command;
+    }
+
+    public void setCommand(String command)
+    {
+        this.command = command;
+    }
+
+    public Map<String, String> getTags()
+    {
+        return tags;
+    }
+
+    public String[] getArgs()
+    {
+        return args;
     }
 }
