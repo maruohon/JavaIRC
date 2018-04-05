@@ -1,5 +1,5 @@
 plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.6'
+    //id 'io.franzbecker.gradle-lombok' version '1.6'
     id 'java'
     id 'maven'
 }
@@ -18,7 +18,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+/*
 task delombok(type: io.franzbecker.gradle.lombok.task.DelombokTask) {
     args("src/main/java", "-d", "src/main/generated")
 }
 jar.dependsOn delombok
+*/
